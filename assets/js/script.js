@@ -117,7 +117,7 @@ $(".list-group").on("click", "span", function() {
 // value of due date was changed
 $(".list-group").on("change", "input[type='text']", function() {
   //get current text
-  var date = $(this).val().trim();
+  var date = $(this).val()
 
   // get the parents ul's id attribute
   var status = $(this).closest(".list-group").attr("id").replace("list-", "");
@@ -157,7 +157,7 @@ $("#modalDueDate").datepicker({
 });
 
 // save button in modal was clicked
-$("#task-form-modal .btn-primary").click(function() {
+$("#task-form-modal .btn-save").click(function() {
   // get form values
   var taskText = $("#modalTaskDescription").val();
   var taskDate = $("#modalDueDate").val();
@@ -184,15 +184,21 @@ $(".card .list-group").sortable({
   tolerance: "pointer",
   helper: "clone",
   activate: function(event) {
+    $(this).addClass("dropover");
+    $(".bottom-trash").addClass("bottom-trash-drag")
     // console.log("activate", this);
   },
   deactivate: function(event) {
+    $(this).removeClass("dropover")
+    $(".bottom-trash").removeClass("bottom-trash-drag")
     // console.log("deactivate", this);
   },
   over: function(event) {
+    $(event.target).addClass("dropover-active")
     // console.log("over", event.target);
   },
   out: function(event) {
+    $(event.target).removeClass("dropover-active")
     // console.log("out", event.target);
   },
   update: function(event) {
@@ -243,7 +249,7 @@ var auditTask = function(taskEl) {
   // this should print out an object for the value of the date variable
   // console.log(time);
   // remove any old classes from element
-  $(taskEl).removeClass("list-group-item-warning list-group-danger");
+  $(taskEl).removeClass("list-group-item-warning list-group-item-danger");
   // apply new class if task is near/over due date
   if (moment().isAfter(time)) {
     $(taskEl).addClass("list-group-item-danger");
@@ -270,9 +276,11 @@ $("#trash").droppable({
     // console.log("drop");
   },
   over: function(event, ui) {
+    $(".bottom-trash").addClass("bottom-trash-active")
     // console.log("over");
   },
   out: function(event, ui) {
+    $(".bottom-trash").removeClass("bottom-trash-active")
     // console.log("out");
   }
 });
@@ -280,4 +288,10 @@ $("#trash").droppable({
 // load tasks for the first time
 loadTasks();
 
-
+setInterval(function() {
+  $(".card .list-group-item").each(function (el){
+    auditTask(el);}
+    );
+  // },5000 
+  // );
+},(1000*60)*30);
